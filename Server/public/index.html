@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Saturas</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Essential JS UI widget -->
+    <script src="http://cdn.syncfusion.com/15.1.0.37/js/web/ej.web.all.min.js"></script>
+    <style>
+        .modal{
+            max-width:800px; 
+            width:50%; 
+            margin:auto; 
+            position: fixed;
+        }
+        @media only screen and (max-width: 768px) {
+            .modal {
+                width: 100%;
+            }
+            
+        }
+        .modal-header, h4, .close {
+        background-color: #336699;
+        color:white !important;
+        text-align: center;
+        font-size: 30px;
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+            <a class="navbar-brand" href="#">Saturas</a>
+            </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" id="logoutView" onclick="logout()" style="display:none;"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><a href="#" id="loginView" onclick="login()" style="display:none";><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+        </div>
+    </nav>
+  
+    <div class="container">
+        <h2 style="color:#444444">Saturas Stem Water Potential Sensor - DSS Chart</h2>
+        <div class="well">
+            <div class="btn-group"> 
+                <button type="button" class="btn btn-primary" id="filterButton">Filter</button>
+            </div>
+            <div class="btn-group">    
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">SAT-904
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Option 1</a></li>
+                        <li><a href="#">Option 2</a></li>
+                        <li><a href="#">Option 3</a></li>
+                    </ul>
+                </div>
+            </div>
+    
+            <div class="btn-group">    
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">HAVA 24
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Option 1</a></li>
+                        <li><a href="#">Option 2</a></li>
+                        <li><a href="#">Option 3</a></li>
+                    </ul>
+                </div>
+            </div>
+    
+<!--
+            <div class="btn-group">    
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Location
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Option 1</a></li>
+                        <li><a href="#">Option 2</a></li>
+                        <li><a href="#">Option 3</a></li>
+                    </ul>
+                </div>
+            </div> 
+-->
+        </div>
+    
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+            <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:35px 50px;">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4><span class="glyphicon glyphicon-lock"></span> Account Login</h4>
+                    </div>
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <div>
+                            <div class="form-group">
+                                <label for="usrname"><span class="glyphicon glyphicon-phone-alt"></span> Phone</label>
+                                <input type="text" class="form-control" id="phoneNumber" placeholder="Enter phone number">
+                            </div>
+<!--
+                        <div class="checkbox">
+                            <label><input type="checkbox" id="rememberMe" value="" checked>Remember me</label>
+                        </div>
+-->
+                        <button class="btn btn-primary btn-block" onclick="closeLoginModal()"><span class="glyphicon glyphicon-off"></span> Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div> 
+    
+        <div id="firstChartContainer" style="height: 500px;"></div>
+
+        <div id="secondChartContainer" style="height: 500px;"></div>
+    
+        <div class="well well-sm">
+            <div align="center">
+                <div class="btn-group">
+                <label>Evapotranspiration Kc:</label>
+                </div>
+                <div class="btn-group">
+                <input type="number" step="0.01" class="form-control" id="evap" placeholder="Value" min="0" max="1" value="1" ></input>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-primary" onclick="updateChartEvap()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript" language="javascript">
+        
+        var chartData0;
+        var chartData1;
+        var chartData2;
+        var chartData3;
+        var chartData4;
+        
+        var now = new Date().getTime();
+        
+        clearData();
+        initializeCharts();
+        checkCookie();
+        
+        function clearData(){
+            chartData0 = [{time: new Date(), temperature:0}];
+            chartData1 = [{time: new Date(), potentialET:0}];
+            chartData2 = [{time: new Date(), precipitation:0}];
+            chartData3 = [{time: new Date(), bar:0}];
+            chartData4 = [{time: new Date(), waterDeficit:0}];
+        }
+        
+        function logout(){
+            $('#logoutView').hide();
+            $('#loginView').show();
+            eraseCookie("phonenumber");
+            clearData();
+            populateCharts();
+            showLoginModal();
+        }
+        
+        function login(){
+            showLoginModal();
+        }
+        
+        var interval = $(window).width() < 1000 ? 5 : 1;
+
+       function initializeCharts() {
+            $("#firstChartContainer").ejChart({
+                primaryYAxis: { 
+                                title: { visible: true, text: 'μ', font: {size: "18px", fontWeight: "bold", color: "red"}}, 
+                                axisLine : { color : "red" }, 
+                                font :{color : "red"} 
+                                },
+                primaryXAxis: {
+                                valueType: 'datetime',
+                                range: { min: new Date(now - (86400 * 1000 * 21)), max: new Date(now + (86400 * 1000)), interval: interval},   
+                                intervalType: 'days',
+                                labelFormat: 'dd/MM',
+                                },
+                axes: [{
+                        name : 'SecondY', 
+                        title: { visible: true, text: '%', font: {size: "18px", fontWeight: "bold", color: "green"}}, 
+                        axisLine: {color: "green"},
+                        font :{color : "green"},
+                        opposedPosition: true,
+                        },{
+                        name : 'ThirdY',                            
+                        title: { visible: true, text: 'mm', font: {size: "18px", fontWeight: "bold", color: "blue"}}, 
+                        axisLine: {color: "blue"},
+                        font :{color : "blue"},
+                        opposedPosition: true,
+                        }],
+                isResponsive: true,
+                title: {text: 'HAVA 24', font: { fontWeight:'bold', size: '2em'}},
+                series: [{
+                        type: "column",
+                        columnWidth: 0.5,
+                        dataSource: chartData0, 
+                        xName: "time", 
+                        yName: "precipitation",
+                        yAxisName: 'ThirdY',        
+                        name: "Precipitation",
+                        tooltip: {visible: true},
+	                    },{
+                        type: "line",
+                        dataSource: chartData1, 
+                        xName: "time", 
+                        yName: "potentialET",
+                        yAxisName: 'SecondY',    
+                        name: "Potential ET",
+                        tooltip: {visible: true},
+	                    },{
+                        type: "line",
+                        dataSource: chartData2, 
+                        xName: "time", 
+                        yName: "temperature",
+                        name: "Temperature",
+                        tooltip: {visible: true},
+	                    }],
+                legend: {visible: true, itemStyle: {width: 30, height: 5}},
+                palette: ["blue", "green", "red"],
+                });
+                
+            $("#secondChartContainer").ejChart({
+                primaryYAxis: { 
+                                title: { visible: true, text: '-bar', font: {size: "18px", fontWeight: "bold", color: "red"}}, 
+                                axisLine : { color : "red" }, 
+                                font :{color : "red"},
+                                stripLine: [{
+                                            visible: true,
+                                            start: 5,
+                                            end: 10,
+                                            color: 'lightgreen',
+                                            opacity: 0.5
+                                            }]},
+                primaryXAxis: {
+                                valueType: 'datetime',
+                                range: { min: new Date(now - (86400 * 1000 * 21)), max: new Date(now + (86400 * 1000)), interval: interval},         
+                                intervalType: 'days',
+                                labelFormat: 'dd/MM',
+                                },
+                axes: [{
+                        name : 'SecondY', 
+                        title: { visible: true, text: 'mm', font: {size: "18px", fontWeight: "bold", color: "blue"}}, 
+                        axisLine: {color: "blue"},
+                        font :{color : "blue"},
+                        opposedPosition: true,
+                    }],
+                isResponsive: true,
+                title: {text: 'Sat-904', font: { fontWeight:'bold', size: '2em'}, subTitle: { text: 'Stem Water Potential and Water Deficit data are provided by Saturas Ltd.', textAlignment: 'center', font:{ fontWeight:'regular', size: '1.2em'}}},
+                series: [{
+                        type: "line",
+                        dataSource: chartData3, 
+                        xName: "time", 
+                        yName: "bar",
+                        name: "Stem Water Potential",
+                        tooltip: {visible: true},
+	                    },{
+                        type: "line",
+                        dataSource: chartData4, 
+                        xName: "time", 
+                        yName: "waterDeficit",
+                        yAxisName: 'SecondY',    
+                        name: "Water Deficit",
+                        tooltip: {visible: true},
+	                    }],
+                legend: {visible: true, itemStyle: {width: 30, height: 5}},
+                palette: ["red", "blue"] 
+                });
+            }
+            
+        
+        function updateChartInterval(interval){
+            var chartA =  $("#firstChartContainer").ejChart("instance"); 
+            var chartB =  $("#secondChartContainer").ejChart("instance");  
+            chartA.model.primaryXAxis.range.interval = interval;
+            chartB.model.primaryXAxis.range.interval = interval;
+            $("#firstChartContainer").ejChart("redraw");  
+            $("#secondChartContainer").ejChart("redraw");      
+       }
+        
+        function updateChartEvap(){
+            var evap = $('#evap').val();
+            if(evap < 0 || evap > 1){
+                return;
+            }
+            var tempChartData = JSON.parse(JSON.stringify(chartData4));
+            for(var i = 0; i < tempChartData.length; i++){
+                tempChartData[i].waterDeficit *= evap;
+            }
+            var chartB =  $("#secondChartContainer").ejChart("instance");  
+            chartB.model.series[1].dataSource = tempChartData;
+            $("#secondChartContainer").ejChart("redraw");      
+        }  
+          
+        $(window).resize(function(){
+                var temp = $(window).width() < 1000 ? 5 : 1;
+                if(temp !== interval){ 
+                    interval = temp;
+                    updateChartInterval(interval); 
+                }
+        });
+        
+        //Handle page cookies
+        //Get cookie
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(',');
+            for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0){
+                    var str = c.substring(nameEQ.length,c.length);
+                    if(str == "") return null;
+                    else return str;
+                }
+            }
+            return null;
+        }
+        
+        //Set cookie
+        function setCookie(name,value,days) {
+            var expires = "";
+            if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = ", expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + value + expires + ", path=/";
+        }
+        
+        function eraseCookie(name) {
+            setCookie(name,"",-1);
+        }
+        
+        //Check cookie
+        function checkCookie() {
+            var user = getCookie("phonenumber");
+            if (user) {
+                getDataFromServer(user);
+            } else {
+                $('#loginView').show();
+                $('#logoutView').hide();
+                showLoginModal(); 
+            }
+        }
+        
+        function showLoginModal(){
+            showModal('myModal');
+        }
+        
+        function closeLoginModal(){
+            var phone = $('#phoneNumber').val();
+            if(phone != "" && phone != null){
+                setCookie("phonenumber", phone, 7);
+                console.log("closing modal");
+                hideModal('myModal');
+                checkCookie();
+            }
+        }
+
+        
+        function getDataFromServer(phone){
+            //show spinner
+            //success
+                $.post("/",
+                {
+                    phonenumber: phone
+                },
+                function(data, status){
+                    console.log(status);
+                    if(status == 'success') {
+                        $('#logoutView').show();
+                        $('#loginView').hide(); 
+                        console.log(data);
+//                        var d = JSON.parse(data);
+                        console.log("data: "+data);
+                        chartData0 = data.chartData0;
+                        console.log("chartData0: "+data.chartData0);
+                        chartData1 = data.chartData1;
+                        chartData2 = data.chartData2;
+                        chartData3 = data.chartData3;
+                        populateCharts();
+                    } 
+                }).fail(function(){
+                        eraseCookie('phonenumber');
+                        alert('Phone number does not exist') 
+                        showLoginModal();
+                })
+            //else if other error alert(error.messege);
+        }
+        
+        function populateCharts(){
+            var chartA = $("#firstChartContainer").ejChart("instance");  
+            
+            chartA.model.series["0"].dataSource = chartData0;
+            chartA.model.series["1"].dataSource = chartData1;
+            chartA.model.series["2"].dataSource = chartData2;   
+            
+            var chartB = $("#secondChartContainer").ejChart("instance");
+            chartB.model.series["0"].dataSource = chartData3;
+            chartB.model.series["1"].dataSource = chartData4;
+            
+            $("#firstChartContainer").ejChart("redraw");
+            $("#secondChartContainer").ejChart("redraw");      
+        }
+        
+        var hideInProgress = false;
+        var showModalId = '';
+
+        function showModal(elementId) {
+            if (hideInProgress) {
+            showModalId = elementId;
+            } else {
+                $("#" + elementId).modal("show");
+            }
+        };
+
+        function hideModal(elementId) {
+            hideInProgress = true;
+            $("#" + elementId).on('hidden.bs.modal', hideCompleted);
+            $("#" + elementId).modal("hide");
+
+            function hideCompleted() {
+                hideInProgress = false;
+                if (showModalId) {
+                    showModal(showModalId);
+                }
+                showModalId = '';
+                $("#" + elementId).off('hidden.bs.modal');
+            }
+        };
+    </script>
+</body>
+</html>
+
