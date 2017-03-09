@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/yoavkamary/Saturas/issues"
   },
-  "homepage": "https://github.com/yoavkamary/Saturas#readme"
+  "homepage": "https://github.com/yoavkamary/Saturas#readme",
+  "dependencies": {
+    "querystring": "^0.2.0"
+  }
 }
