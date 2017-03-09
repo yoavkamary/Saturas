@@ -47,6 +47,6 @@ http.createServer(function(req, res) {
 
 	
 
-}).listen(3000);
+}).listen(8080,'http://saturas-saturas.44fs.preview.openshiftapps.com');
 
 console.log("Form server listening on port 3000");
