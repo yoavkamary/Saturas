@@ -49,4 +49,4 @@ http.createServer(function(req, res) {
 
 }).listen(8080);
 
-console.log("Form server listening on port 3000");
+console.log("server listening on port 8080");
