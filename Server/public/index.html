@@ -226,6 +226,7 @@
 	                    }],
                 legend: {visible: true, itemStyle: {width: 30, height: 5}},
                 palette: ["blue", "green", "red"],
+                loaded:"chartLoaded", 
                 });
                 
             $("#secondChartContainer").ejChart({
@@ -275,7 +276,14 @@
                 palette: ["red", "blue"] 
                 });
             }
-            
+         
+        
+        function chartLoaded(sender) { 
+            var titleElement1 = document.getElementById(this._id + "_svg_YAxisTitle_1"); 
+            titleElement1.setAttribute("transform", ""); 
+            var titleElement2 = document.getElementById(this._id + "_svg_YAxisTitle_2");
+            titleElement2.setAttribute("transform", "");
+        }    
         
         function updateChartInterval(interval){
             var chartA =  $("#firstChartContainer").ejChart("instance"); 
