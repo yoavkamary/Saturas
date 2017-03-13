@@ -224,9 +224,10 @@
                         name: "Temperature",
                         tooltip: {visible: true},
 	                    }],
-                legend: {visible: true, itemStyle: {width: 30, height: 5}},
+                legend: {visible: true, itemStyle: {width: 20, height: 20}},
                 palette: ["blue", "green", "red"],
                 loaded:"chartLoaded", 
+                legendItemRendering: "legend", 
                 });
                 
             $("#secondChartContainer").ejChart({
@@ -272,11 +273,18 @@
                         name: "Water Deficit",
                         tooltip: {visible: true},
 	                    }],
-                legend: {visible: true, itemStyle: {width: 30, height: 5}},
-                palette: ["red", "blue"] 
+                legend: {visible: true, itemStyle: {width: 20, height: 20}},
+                palette: ["red", "blue"],
+                legendItemRendering: "legend",
                 });
             }
-         
+        
+        function legend(sender) { 
+            if (sender.model.series[sender.data.legendItem.SeriesIndex].type == "line"){ 
+                    sender.data.legendItem.Shape = "horizline"; 
+                    sender.data.style.Style.BorderWidth = 4; 
+             } 
+        } 
         
         function chartLoaded(sender) { 
             var titleElement1 = document.getElementById(this._id + "_svg_YAxisTitle_1"); 
