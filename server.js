@@ -33,7 +33,7 @@ http.createServer(function(req, res) {
             if(post.phonenumber === "1234" ){
                 console.log("success!");
                 res.writeHead(200, {"Content-Type": "text/json"});
-                fs.createReadStream("./Server/public/data.json", "UTF-8").pipe(res);
+                fs.createReadStream("./Server/public/Data/data.json", "UTF-8").pipe(res);
             
             } else {
                 res.writeHead(404, {"Content-Type": "text/plain"});
