@@ -144,9 +144,14 @@
         
         var now = new Date().getTime();
         
-        clearData();
-        initializeCharts();
-        checkCookie();
+        $(document).ready(function(){
+                var interval = $(window).width() < 1000 ? 5 : 1;
+                console.log("interval: " + interval)
+                clearData();
+                initializeCharts();
+                checkCookie();
+            });
+        });
         
         function clearData(){
             chartData0 = [{time: new Date(), temperature:0}];
@@ -169,7 +174,6 @@
             showLoginModal();
         }
         
-        var interval = $(window).width() < 1000 ? 5 : 1;
 
        function initializeCharts() {
             $("#firstChartContainer").ejChart({
