@@ -10,11 +10,16 @@ var obj = {
 
 var parser = parse({from: 2}, function(err, data){
   for(var i = 0; i < data.length; i++){
-        if(data[i][5] != '-') obj.chartData0.push({time: data[i][0], precipitation: data[i][5]});
-        if(data[i][6] != '-') obj.chartData1.push({time: data[i][0], potentialET: data[i][6]});
-        if(data[i][7] != '-') obj.chartData2.push({time: data[i][0], temperature: data[i][7]});
-        if(data[i][8] != '-') obj.chartData3.push({time: data[i][0], bar: data[i][8]});
-        if(data[i][9] != '-') obj.chartData4.push({time: data[i][0], waterDeficit: data[i][9]});
+      console.log("data: " + data[i][0]);
+      var temp = data[i][0].split("/");
+      var to = temp[1] + "/" + temp[0] + "/" + temp[2];
+      var tempDate = new Date(to);
+      console.log("temp: " + tempDate);
+        if(data[i][5] != '-') obj.chartData0.push({time: tempDate, precipitation: data[i][5]});
+        if(data[i][6] != '-') obj.chartData1.push({time: tempDate, potentialET: data[i][6]});
+        if(data[i][7] != '-') obj.chartData2.push({time: tempDate, temperature: data[i][7]});
+        if(data[i][8] != '-') obj.chartData3.push({time: tempDate, bar: data[i][8]});
+        if(data[i][9] != '-') obj.chartData4.push({time: tempDate, waterDeficit: data[i][9]});
   }
     console.log(JSON.stringify(obj));
   fs.writeFile('./public/Data/data.json',JSON.stringify(obj),'UTF-8',function(err){
