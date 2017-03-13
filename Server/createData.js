@@ -10,11 +10,11 @@ var obj = {
 
 var parser = parse({from: 2}, function(err, data){
   for(var i = 0; i < data.length; i++){
-        if(data[i][5] != ' ') obj.chartData0.push({time: new Date(data[i][0]), precipitation: data[i][5]});
-        if(data[i][6] != ' ') obj.chartData1.push({time: new Date(data[i][0]), potentialET: data[i][6]});
-        if(data[i][7] != ' ') obj.chartData2.push({time: new Date(data[i][0]), temperature: data[i][7]});
-        if(data[i][8] != ' ') obj.chartData3.push({time: new Date(data[i][0]), bar: data[i][8]});
-        if(data[i][9] != ' ') obj.chartData4.push({time: new Date(data[i][0]), waterDeficit: data[i][9]});
+        if(data[i][5] != '-') obj.chartData0.push({time: new Date(data[i][0]), precipitation: data[i][5]});
+        if(data[i][6] != '-') obj.chartData1.push({time: new Date(data[i][0]), potentialET: data[i][6]});
+        if(data[i][7] != '-') obj.chartData2.push({time: new Date(data[i][0]), temperature: data[i][7]});
+        if(data[i][8] != '-') obj.chartData3.push({time: new Date(data[i][0]), bar: data[i][8]});
+        if(data[i][9] != '-') obj.chartData4.push({time: new Date(data[i][0]), waterDeficit: data[i][9]});
   }
     
   fs.writeFile('./public/Data/data.json',JSON.stringify(obj),'UTF-8',function(err){
