@@ -441,7 +441,7 @@
                     } 
                 }).fail(function(err){
                         eraseCookie('phonenumber');
-                        document.getElementById('spinner').style.visibility = hidden;
+                        document.getElementById('spinner').style.visibility = 'hidden';
                     if(err.status === 404){
                         alert('Phone number does not exist');
                     } else {
