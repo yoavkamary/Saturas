@@ -34,9 +34,8 @@ http.createServer(function(req, res) {
 		req.on("end", function() {
             console.log("Query data from POST request: " + queryData);
             var post = qs.parse(queryData);
-            console.log(post.phonenumber);
             if(post.phonenumber === "1234" ){
-                console.log("success!");
+                console.log("success!\n");
                 res.writeHead(200, {"Content-Type": "text/json"});
                 fs.createReadStream("./Server/public/Data/data.json", "UTF-8").pipe(res);
             
