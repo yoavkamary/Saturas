@@ -28,7 +28,28 @@
         color:white !important;
         text-align: center;
         font-size: 30px;
-    }
+        }
+        .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 100px;
+        height: 100px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+        position: fixed; 
+        visibility: hidden;
+        }
+
+        @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -44,7 +65,7 @@
         </div>
     </nav>
   
-    <div class="container">
+    <div class="container" style="position: relative">
         <h2 style="color:#444444">Saturas Stem Water Potential Sensor - DSS Chart</h2>
         <div class="well">
             <div class="btn-group"> 
@@ -74,7 +95,6 @@
                 </div>
             </div>
     
-<!--
             <div class="btn-group">    
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Location
@@ -86,7 +106,6 @@
                     </ul>
                 </div>
             </div> 
--->
         </div>
     
         <div class="modal fade" id="myModal" role="dialog">
@@ -116,7 +135,9 @@
         </div> 
     
         <div id="firstChartContainer" style="height: 500px;"></div>
-
+        
+        <div id="spinner" class="loader"></div>
+        
         <div id="secondChartContainer" style="height: 500px;"></div>
     
         <div class="well well-sm">
@@ -144,14 +165,35 @@
         
         var now = new Date().getTime();
         var interval = 0;
+        positionSpinner();
+        document.getElementById('spinner').style.visibility = "visible";
         
         $(document).ready(function(){
+            
+                $(window).resize(function(){
+                    var temp = $(window).width() < 1000 ? 5 : 1;
+                    if(temp !== interval){ 
+                        interval = temp;
+                        updateChartInterval(interval);
+                    }
+                    positionSpinner();
+                });
+            
                 interval = $(window).width() < 1000 ? 5 : 1;
-                console.log("interval: " + interval)
                 clearData();
                 initializeCharts();
                 checkCookie();
         });
+        
+        function positionSpinner(){
+            var spinner = document.getElementById('spinner');
+            var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            var leftPosition = (w - spinner.offsetWidth)/2;
+            var topPosition = (h - spinner.offsetHeight)/2;
+            spinner.style.left = leftPosition +'px';
+            spinner.style.top = topPosition +'px';
+        }
         
         function clearData(){
             chartData0 = [{time: new Date(), temperature:0}];
@@ -319,14 +361,6 @@
             chartB.model.series[1].dataSource = tempChartData;
             $("#secondChartContainer").ejChart("redraw");      
         }  
-          
-        $(window).resize(function(){
-                var temp = $(window).width() < 1000 ? 5 : 1;
-                if(temp !== interval){ 
-                    interval = temp;
-                    updateChartInterval(interval); 
-                }
-        });
         
         //Handle page cookies
         //Get cookie
@@ -362,12 +396,14 @@
         
         //Check cookie
         function checkCookie() {
+            document.getElementById('spinner').style.visibility = "visible";
             var user = getCookie("phonenumber");
             if (user) {
                 getDataFromServer(user);
             } else {
                 $('#loginView').show();
                 $('#logoutView').hide();
+                document.getElementById('spinner').style.visibility = "hidden";
                 showLoginModal(); 
             }
         }
@@ -380,7 +416,6 @@
             var phone = $('#phoneNumber').val();
             if(phone != "" && phone != null){
                 setCookie("phonenumber", phone, 7);
-                console.log("closing modal");
                 hideModal('myModal');
                 checkCookie();
             }
@@ -388,34 +423,32 @@
 
         
         function getDataFromServer(phone){
-            //show spinner
-            //success
                 $.post("/",
                 {
                     phonenumber: phone
                 },
                 function(data, status){
-                    console.log(status);
                     if(status == 'success') {
                         $('#logoutView').show();
                         $('#loginView').hide(); 
-                        console.log(data);
 //                        var d = JSON.parse(data);
-                        console.log("data: "+data);
                         chartData0 = data.chartData0;
                         chartData1 = data.chartData1;
                         chartData2 = data.chartData2;
                         chartData3 = data.chartData3;
                         chartData4 = data.chartData4;
-                        console.log("chartData0: "+JSON.stringify(chartData4));
                         populateCharts();
                     } 
-                }).fail(function(){
+                }).fail(function(err){
                         eraseCookie('phonenumber');
-                        alert('Phone number does not exist') 
-                        showLoginModal();
+                        document.getElementById('spinner').style.visibility = hidden;
+                    if(err.status === 404){
+                        alert('Phone number does not exist');
+                    } else {
+                        alert('An error occoured - try to refresh the page')
+                    }   
+                    showLoginModal();
                 })
-            //else if other error alert(error.messege);
         }
         
         function populateCharts(){
@@ -428,7 +461,7 @@
             var chartB = $("#secondChartContainer").ejChart("instance");
             chartB.model.series["0"].dataSource = chartData3;
             chartB.model.series["1"].dataSource = chartData4;
-            
+            document.getElementById('spinner').style.visibility = "hidden";
             $("#firstChartContainer").ejChart("redraw");
             $("#secondChartContainer").ejChart("redraw");      
         }

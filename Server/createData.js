@@ -1,11 +1,11 @@
 var fs = require('fs');
 var parse = require('csv-parse');
 var obj = {
-    chartData0:[],
-    chartData1:[],
-    chartData2:[],
-    chartData3:[],
-    chartData4:[]
+    chartData0: [],
+    chartData1: [],
+    chartData2: [],
+    chartData3: [],
+    chartData4: []
           };
 
 var parser = parse({from: 2}, function(err, data){
