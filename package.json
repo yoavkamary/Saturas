@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/yoavkamary/Saturas#readme",
   "dependencies": {
+    "csv-parse": "^1.2.0",
     "querystring": "^0.2.0"
   }
 }
