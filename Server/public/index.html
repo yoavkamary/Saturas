@@ -73,28 +73,33 @@
             </div>
             <div class="btn-group">    
                 <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">SAT-904
-                        <span class="caret"></span></button>
+                    <button id="sensorId" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Sensor Id
+                        <!--<span class="caret"></span>--></button>
+<!--
                     <ul class="dropdown-menu">
                         <li><a href="#">Option 1</a></li>
                         <li><a href="#">Option 2</a></li>
                         <li><a href="#">Option 3</a></li>
                     </ul>
+-->
                 </div>
             </div>
     
             <div class="btn-group">    
                 <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">HAVA 24
-                        <span class="caret"></span></button>
+                    <button id="location" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Location
+                        <!--<span class="caret"></span>--></button>
+<!--
                     <ul class="dropdown-menu">
                         <li><a href="#">Option 1</a></li>
                         <li><a href="#">Option 2</a></li>
                         <li><a href="#">Option 3</a></li>
                     </ul>
+-->
                 </div>
             </div>
     
+<!--
             <div class="btn-group">    
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Location
@@ -106,6 +111,7 @@
                     </ul>
                 </div>
             </div> 
+-->
         </div>
     
         <div class="modal fade" id="myModal" role="dialog">
@@ -157,6 +163,8 @@
     
     <script type="text/javascript" language="javascript">
         
+        var location1;
+        var sensorId1;
         var chartData0;
         var chartData1;
         var chartData2;
@@ -196,6 +204,8 @@
         }
         
         function clearData(){
+            location1 = "";
+            sensorId1 = "";
             chartData0 = [{time: new Date(), temperature:0}];
             chartData1 = [{time: new Date(), potentialET:0}];
             chartData2 = [{time: new Date(), precipitation:0}];
@@ -208,6 +218,7 @@
             $('#loginView').show();
             eraseCookie("phonenumber");
             clearData();
+            clearDropdowns();
             populateCharts();
             showLoginModal();
         }
@@ -216,7 +227,16 @@
             showLoginModal();
         }
         
-
+        function setDropdowns(){
+            $('#location').html(location1);    
+            $('#sensorId').html(sensorId1); 
+        }
+        
+        function clearDropdowns(){
+            $('#location').html("Location");    
+            $('#sensorId').html("Sensor Id"); 
+        }
+        
        function initializeCharts() {
             $("#firstChartContainer").ejChart({
                 primaryYAxis: { 
@@ -244,7 +264,7 @@
                         opposedPosition: true,
                         }],
                 isResponsive: true,
-                title: {text: 'HAVA 24', font: { fontWeight:'bold', size: '2em'}},
+                title: {text: location1, font: { fontWeight:'bold', size: '2em'}},
                 series: [{
                         type: "column",
                         columnWidth: 0.5,
@@ -302,7 +322,7 @@
                         opposedPosition: true,
                     }],
                 isResponsive: true,
-                title: {text: 'Sat-904', font: { fontWeight:'bold', size: '2em'}, subTitle: { text: 'Stem Water Potential and Water Deficit data are provided by Saturas Ltd.', textAlignment: 'center', font:{ fontWeight:'regular', size: '1.2em'}}},
+                title: {text: sensorId1, font: { fontWeight:'bold', size: '2em'}, subTitle: { text: 'Stem Water Potential and Water Deficit data are provided by Saturas Ltd.', textAlignment: 'center', font:{ fontWeight:'regular', size: '1.2em'}}},
                 series: [{
                         type: "line",
                         dataSource: chartData3, 
@@ -432,11 +452,14 @@
                         $('#logoutView').show();
                         $('#loginView').hide(); 
 //                        var d = JSON.parse(data);
+                        sensorId1 = data.info.sensorId;
+                        location1 = data.info.location;
                         chartData0 = data.chartData0;
                         chartData1 = data.chartData1;
                         chartData2 = data.chartData2;
                         chartData3 = data.chartData3;
                         chartData4 = data.chartData4;
+                        setDropdowns();
                         populateCharts();
                     } 
                 }).fail(function(err){
@@ -453,14 +476,15 @@
         
         function populateCharts(){
             var chartA = $("#firstChartContainer").ejChart("instance");  
-            
             chartA.model.series["0"].dataSource = chartData0;
             chartA.model.series["1"].dataSource = chartData1;
-            chartA.model.series["2"].dataSource = chartData2;   
+            chartA.model.series["2"].dataSource = chartData2;
+            chartA.model.title.text = (location1 === "") ? "Location" : location1;
             
             var chartB = $("#secondChartContainer").ejChart("instance");
             chartB.model.series["0"].dataSource = chartData3;
             chartB.model.series["1"].dataSource = chartData4;
+            chartB.model.title.text = (sensorId1 === "") ? "SAT-ID" : "SAT-" + sensorId1;
             document.getElementById('spinner').style.visibility = "hidden";
             $("#firstChartContainer").ejChart("redraw");
             $("#secondChartContainer").ejChart("redraw");      
