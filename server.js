@@ -19,7 +19,7 @@ http.createServer(function(req, res) {
 
 	if (req.method === "GET") {
 		res.writeHead(200, {"Content-Type": "text/html"});
-	    fs.createReadStream("./public/index.html", "UTF-8").pipe(res);
+	    fs.createReadStream(".Server/public/index.html", "UTF-8").pipe(res);
 	} else if (req.method === "POST") {
 
 		req.on("data", function(chunk) {
@@ -37,7 +37,7 @@ http.createServer(function(req, res) {
             if(post.phonenumber === "1234" ){
                 console.log("success!\n");
                 res.writeHead(200, {"Content-Type": "text/json"});
-                fs.createReadStream("./public/Data/data.json", "UTF-8").pipe(res);
+                fs.createReadStream(".Server/public/Data/data.json", "UTF-8").pipe(res);
             
             } else {
                 console.log("failure!");

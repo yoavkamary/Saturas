@@ -25,7 +25,7 @@ var parser = parse({from: 2}, function(err, data){
         if(data[i][9] != '-') obj.chartData4.push({time: tempDate, waterDeficit: data[i][9]});
       }
 
-    fs.writeFile('./public/Data/data.json',JSON.stringify(obj),'UTF-8',function(err){
+    fs.writeFile('.Server/public/Data/data.json',JSON.stringify(obj),'UTF-8',function(err){
         if(err){
             console.error(err.message);
             throw err;
@@ -41,4 +41,4 @@ function dateObjectFromString(str){
     return new Date(to);
 }
 
-fs.createReadStream(__dirname+'/public/Data/Saturas3.csv').pipe(parser);
+fs.createReadStream(__dirname+'Server/public/Data/Saturas3.csv').pipe(parser);
