@@ -41,4 +41,4 @@ function dateObjectFromString(str){
     return new Date(to);
 }
 
-fs.createReadStream(__dirname+'Server/public/Data/Saturas3.csv').pipe(parser);
+fs.createReadStream(__dirname+'/Server/public/Data/Saturas3.csv').pipe(parser);
