@@ -11,18 +11,30 @@
     <!-- Essential JS UI widget -->
     <script src="http://cdn.syncfusion.com/15.1.0.37/js/web/ej.web.all.min.js"></script>
     <style>
+/*
         .modal{
             max-width:800px; 
             width:50%; 
             margin:auto; 
             position: fixed;
         }
-        @media only screen and (max-width: 768px) {
+*/
+/*
+        @media only screen and (max-width: 1000) {
             .modal {
-                width: 100%;
+                width: 50%;
             }
             
         }
+*/
+/*
+        @media only screen and (max-width: 768px) {
+            .modal {
+                width: 80%;
+            }
+            
+        }
+*/
         .modal-header, h4, .close {
         background-color: #336699;
         color:white !important;
@@ -265,7 +277,7 @@
                         opposedPosition: true,
                         }],
                 isResponsive: true,
-                title: {text: location1, font: { fontWeight:'bold', size: '2em'}},
+                title: {text: location1 === '' ?  'Location' : location1, font: { fontWeight:'bold', size: '2em'}},
                 series: [{
                         type: "column",
                         columnWidth: 0.5,
@@ -323,7 +335,7 @@
                         opposedPosition: true,
                     }],
                 isResponsive: true,
-                title: {text: sensorId1, font: { fontWeight:'bold', size: '2em'}, subTitle: { text: 'Stem Water Potential and Water Deficit data are provided by Saturas Ltd.', textAlignment: 'center', font:{ fontWeight:'regular', size: '1.2em'}}},
+                title: {text: sensorId1 === '' ?  'SAT-ID' : sensorId1, font: { fontWeight:'bold', size: '2em'}, subTitle: { text: 'Stem Water Potential and Water Deficit data are provided by Saturas Ltd.', textAlignment: 'center', font:{ fontWeight:'regular', size: '1.2em'}}},
                 series: [{
                         type: "line",
                         dataSource: chartData3, 
@@ -500,7 +512,11 @@
             showModalId = elementId;
             } else {
                 $("#" + elementId).modal("show");
+
             }
+            setTimeout(function(){
+                    $('#phoneNumber').focus();   
+            },200);
         };
 
         function hideModal(elementId) {
