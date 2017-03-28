@@ -18,7 +18,7 @@ var parser = parse({from: 2}, function(err, data){
     if(data[i][9] != '-') obj.chartData4.push({time: tempDate, waterDeficit: data[i][9]});
   }
 
-    fs.writeFile('./Server/public/Data/data.json',JSON.stringify(obj),'UTF-8',function(err){
+    fs.writeFile('./public/Data/data.json',JSON.stringify(obj),'UTF-8',function(err){
         if(err){
             console.error(err.message);
             throw err;

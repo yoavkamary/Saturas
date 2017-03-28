@@ -3,7 +3,7 @@ var fs = require("fs");
 var qs = require('querystring');
 var exec = require('child_process').exec;
 
-exec('node ./Server/createData.js', function(error, stdout, stderr) {
+exec('node ./createData.js', function(error, stdout, stderr) {
   if(error){
     console.error(error.message);   
   }
@@ -19,7 +19,7 @@ http.createServer(function(req, res) {
 
 	if (req.method === "GET") {
 		res.writeHead(200, {"Content-Type": "text/html"});
-	    fs.createReadStream("./Server/public/index.html", "UTF-8").pipe(res);
+	    fs.createReadStream("./public/index.html", "UTF-8").pipe(res);
 	} else if (req.method === "POST") {
 
 		req.on("data", function(chunk) {
@@ -37,7 +37,7 @@ http.createServer(function(req, res) {
             if(post.phonenumber === "1234" ){
                 console.log("success!\n");
                 res.writeHead(200, {"Content-Type": "text/json"});
-                fs.createReadStream("./Server/public/Data/data.json", "UTF-8").pipe(res);
+                fs.createReadStream("./public/Data/data.json", "UTF-8").pipe(res);
             
             } else {
                 console.log("failure!");
